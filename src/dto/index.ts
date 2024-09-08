@@ -6,3 +6,11 @@ export class SignInDto {
   @IsString()
   password: string;
 }
+export class CreateUserDto {
+  @IsString()
+  fullName: string;
+  @IsEmail()
+  email: string;
+  @IsString()
+  password: string;
+}
