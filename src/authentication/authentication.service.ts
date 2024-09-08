@@ -19,7 +19,7 @@ export class AuthenticationService {
     } else {
       if (!bcrypt.compareSync(password, user.password))
         return { message: 'wrong password' };
-      else return user.id;
+      else return user.userId;
     }
   }
 }

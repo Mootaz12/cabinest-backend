@@ -1,15 +1,19 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 
-import { CreateUserDto } from 'src/dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateUserDto, UpdateUserDto } from 'src/dto';
+import { FileService } from 'src/file/file.service';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private fileService: FileService,
+  ) {}
   async getUser(id: string) {
     const userId = Number(id);
-    const res = await this.prisma.user.findUnique({ where: { id: userId } });
+    const res = await this.prisma.user.findUnique({ where: { userId } });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...user } = res;
     return user;
@@ -33,5 +37,27 @@ export class UserService {
       });
       return user;
     }
+  }
+  async updateUser(
+    id: string,
+    updateUserDto: UpdateUserDto,
+    file?: Express.Multer.File,
+  ) {
+    const userId = Number(id);
+    const data: any = {};
+    if (updateUserDto.fullName) data.fullName = updateUserDto.fullName;
+    if (updateUserDto.email) data.email = updateUserDto.email;
+    if (updateUserDto.password) {
+      const hashedPassword = await bcrypt.hash(updateUserDto.password, 10);
+      data.password = hashedPassword;
+    }
+    if (file) {
+      const { secure_url: imageUrl } = await this.fileService.uploadImage(file);
+      data.imageUrl = imageUrl;
+    }
+    return await this.prisma.user.update({
+      where: { userId },
+      data,
+    });
   }
 }
