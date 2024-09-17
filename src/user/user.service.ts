@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 
 import { CreateUserDto, UpdateUserDto } from 'src/dto';
 import { FileService } from 'src/file/file.service';
+import { User } from 'src/types';
 
 @Injectable()
 export class UserService {
@@ -11,14 +12,16 @@ export class UserService {
     private prisma: PrismaService,
     private fileService: FileService,
   ) {}
-  async getUser(id: string) {
+  async getUser(id: string): Promise<User> {
     const userId = Number(id);
     const res = await this.prisma.user.findUnique({ where: { userId } });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...user } = res;
     return user;
   }
-  async createUser(createUserDto: CreateUserDto) {
+  async createUser(
+    createUserDto: CreateUserDto,
+  ): Promise<User | { message: string }> {
     const existinguser = await this.prisma.user.findUnique({
       where: {
         email: createUserDto.email,
@@ -42,7 +45,7 @@ export class UserService {
     id: string,
     updateUserDto: UpdateUserDto,
     file?: Express.Multer.File,
-  ) {
+  ): Promise<User> {
     const userId = Number(id);
     const data: any = {};
     if (updateUserDto.fullName) data.fullName = updateUserDto.fullName;

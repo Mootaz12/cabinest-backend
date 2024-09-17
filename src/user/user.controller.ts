@@ -27,7 +27,7 @@ export class UserController {
   }
   @Patch(':userId')
   @UseInterceptors(FileInterceptor('file'))
-  async updateUser(
+  updateUser(
     @Param('userId') id: string,
     @Body() updateUserDto: UpdateUserDto,
     @UploadedFile() file: Express.Multer.File,
