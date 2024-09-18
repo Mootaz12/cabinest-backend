@@ -12,7 +12,9 @@ export class CabinService {
     private fileService: FileService,
   ) {}
   async getCabins(): Promise<Cabin[]> {
-    return await this.prisma.cabin.findMany({});
+    return await this.prisma.cabin.findMany({
+      orderBy: { cabinId: 'desc' },
+    });
   }
   async getCabin(id: string): Promise<Cabin> {
     const cabinId = Number(id);
