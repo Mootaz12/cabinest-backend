@@ -14,7 +14,8 @@ CREATE TABLE "Cabin" (
     "maxCapacity" INTEGER NOT NULL,
     "price" REAL NOT NULL,
     "discount" REAL NOT NULL,
-    "imageUrl" TEXT
+    "imageUrl" TEXT,
+    "description" TEXT NOT NULL
 );
 
 -- CreateIndex

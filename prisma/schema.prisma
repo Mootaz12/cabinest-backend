@@ -28,4 +28,5 @@ model Cabin {
   price       Float
   discount    Float
   imageUrl    String?
+  description String
 }

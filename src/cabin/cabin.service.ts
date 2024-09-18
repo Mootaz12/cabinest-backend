@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { FileService } from 'src/file/file.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCabinDto, UpdateCabinDto } from 'src/dto';
-import { Cabin } from 'src/types';
+import { Cabin, CabinFilterType } from 'src/types';
 
 @Injectable()
 export class CabinService {
@@ -11,8 +11,22 @@ export class CabinService {
     private prisma: PrismaService,
     private fileService: FileService,
   ) {}
-  async getCabins(): Promise<Cabin[]> {
-    return await this.prisma.cabin.findMany();
+  async getCabins(filter: CabinFilterType): Promise<Cabin[]> {
+    if (filter === 'All') return await this.prisma.cabin.findMany();
+    if (filter === 'With discount')
+      return await this.prisma.cabin.findMany({
+        where: {
+          discount: { gte: 0 },
+        },
+      });
+    if (filter === 'No discount')
+      return await this.prisma.cabin.findMany({
+        where: {
+          discount: {
+            equals: 0,
+          },
+        },
+      });
   }
   async getCabin(id: string): Promise<Cabin> {
     const cabinId = Number(id);
@@ -33,6 +47,7 @@ export class CabinService {
 
     data.price = Number(createCabinDto.price);
     data.discount = Number(createCabinDto.discount);
+    data.description = createCabinDto.description;
     if (file) {
       const { secure_url: imageUrl } = await this.fileService.uploadImage(file);
       data.imageUrl = imageUrl;
@@ -55,6 +70,7 @@ export class CabinService {
 
     data.price = Number(updateCabinDto.price);
     data.discount = Number(updateCabinDto.discount);
+    data.description = updateCabinDto.description;
     if (file) {
       const { secure_url: imageUrl } = await this.fileService.uploadImage(file);
       data.imageUrl = imageUrl;

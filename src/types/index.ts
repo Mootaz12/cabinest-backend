@@ -12,4 +12,6 @@ export type Cabin = {
   price: number;
   discount?: number;
   imageUrl?: string;
+  description: string;
 };
+export type CabinFilterType = 'All' | 'With discount' | 'No discount';

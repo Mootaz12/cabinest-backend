@@ -8,18 +8,20 @@ import {
   Param,
   Patch,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { CabinService } from './cabin.service';
 import { CreateCabinDto, UpdateCabinDto } from 'src/dto';
+import { CabinFilterType } from 'src/types';
 
 @Controller('cabin')
 export class CabinController {
   constructor(private readonly cabinService: CabinService) {}
   @Get()
-  getAllCabin() {
-    return this.cabinService.getCabins();
+  getAllCabin(@Query('query') filter: CabinFilterType) {
+    return this.cabinService.getCabins(filter);
   }
   @Get(':cabinId')
   getCabin(@Param('cabinId') id: string) {

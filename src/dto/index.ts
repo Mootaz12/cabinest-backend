@@ -36,6 +36,8 @@ export class CreateCabinDto {
   @IsOptional()
   @IsString()
   discount: string;
+  @IsString()
+  description: string;
 }
 export class UpdateCabinDto {
   @IsOptional()
@@ -50,4 +52,7 @@ export class UpdateCabinDto {
   @IsOptional()
   @IsString()
   discount: string;
+  @IsOptional()
+  @IsString()
+  description: string;
 }
