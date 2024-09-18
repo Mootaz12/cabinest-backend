@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { FileService } from 'src/file/file.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCabinDto, UpdateCabinDto } from 'src/dto';
-import { Cabin, CabinFilterType } from 'src/types';
+import { Cabin } from 'src/types';
 
 @Injectable()
 export class CabinService {
@@ -11,22 +11,8 @@ export class CabinService {
     private prisma: PrismaService,
     private fileService: FileService,
   ) {}
-  async getCabins(filter: CabinFilterType): Promise<Cabin[]> {
-    if (filter === 'All') return await this.prisma.cabin.findMany();
-    if (filter === 'With discount')
-      return await this.prisma.cabin.findMany({
-        where: {
-          discount: { gte: 0 },
-        },
-      });
-    if (filter === 'No discount')
-      return await this.prisma.cabin.findMany({
-        where: {
-          discount: {
-            equals: 0,
-          },
-        },
-      });
+  async getCabins(): Promise<Cabin[]> {
+    return await this.prisma.cabin.findMany({});
   }
   async getCabin(id: string): Promise<Cabin> {
     const cabinId = Number(id);
